@@ -17,7 +17,7 @@
 ├── backend/                  FastAPI（Python） 后端
 │   ├── app/routers/          每个业务模块一组接口
 │   ├── app/services/         业务规则与状态流转
-│   └── app/store.py          内存数据仓库与示例数据
+│   └── app/store.py          数据仓库（持久化到 backend/data/store.json）
 ├── .gitignore
 └── docker-compose.yml
 ```
@@ -44,6 +44,25 @@ npm run dev
 
 前端默认监听 `http://127.0.0.1:5173/`，dev server 不会自动打开浏览器，
 需要自己访问。`/api` 由 vite 代理到后端 `http://127.0.0.1:8000`。
+
+## 初始化与自检流程
+
+一条命令跑完「示例数据初始化 → 服务健康检查 → 模块自检 → 报告留档」：
+
+```bash
+make pipeline          # 或：cd backend && ./pipeline.sh
+```
+
+- 示例数据持久化在 `backend/data/store.json`：反复初始化按模块内 id 去重，
+  不会产生重复记录；运行期的登记与状态流转也会落盘，服务重启后数据仍然可用。
+- 服务未启动时流程会自动拉起临时实例（跑完自动停止）；已在运行时直接复用，
+  并通过 `POST /api/admin/seed` 同步运行实例的内存数据。
+- 自检逐模块验证接口可用性，指标（今日新增、待处理、异常量）取自
+  `GET /api/overview`，与运营概览页同源同步。
+- 哪一环失败会指出环节或模块名；进度记录在 `backend/data/pipeline-state.json`，
+  修复后重跑同一命令会从断点继续，`--fresh` 可忽略断点全量重跑。
+- 自检报告按时间戳留档在 `backend/reports/`，报告自带口径版本（spec），
+  历史报告不覆盖、按当时的口径解读。
 
 ## 业务模块
 
