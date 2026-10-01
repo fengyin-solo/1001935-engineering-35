@@ -85,3 +85,9 @@ desktop.ini
 *.db
 *.pid
 *.seed
+
+# devflow 一键流程的运行期文件（自检留档目录 archive/ 不在忽略之列）
+**/.devflow/state.json
+**/.devflow/server.log
+**/.devflow/server.pid
+backend/data/

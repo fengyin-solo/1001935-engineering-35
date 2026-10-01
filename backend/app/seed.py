@@ -3,6 +3,9 @@ from __future__ import annotations
 
 from typing import Any
 
+# 示例数据版本：内容有调整时升版本；版本不变时重复初始化不会重复写入。
+SEED_VERSION = "2026.10.01"
+
 SEED_ROWS: dict[str, list[dict[str, Any]]] = {
     "windfarm": [{'id': 1,
   'status': '在建',
